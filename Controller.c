@@ -1,7 +1,7 @@
 #include "Controller.h"
 
-typedef enum {
-	L_UP,
+typedef enum {	//All of the commands for controlls that you want to use go here. 
+	L_UP,		//Don't forget to add them to the case statement at the bottom to tell the computer what the commands mean
 	L_DOWN,
 	L_LEFT,
 	L_RIGHT,
@@ -19,8 +19,8 @@ typedef enum {
 	ZR,
 	MINUS,
     PLUS,
-	SPRINT,
-	SPRINT_JUMP,
+	SPRINT,		//Left Stick Left, and B
+	SPRINT_JUMP,	//Left Stick Left, B, and A
 	SUSPEND,
 	SYNC,
     NOTHING
@@ -32,7 +32,7 @@ typedef struct {
 } command; 
 
 //Instructions for controller goes here
-//Plug in on sync screen
+//Plug in on sync screen with cursor over the suspend point
 static const command step[] = {
 	
 	{SYNC,5},
@@ -41,7 +41,9 @@ static const command step[] = {
 	{NOTHING,25},
 	{A,5},
 	{NOTHING,100},
+
 	//Game Start
+
 	{A,5},
 	{NOTHING,115},
 	{SPRINT,47},
@@ -71,7 +73,7 @@ static const command step[] = {
 	{SPRINT,5},
 	{NOTHING,195},
 	{SPRINT,39},
-	{SPRINT_JUMP,3},	//2nd Goomba
+	{SPRINT_JUMP,3},	//2nd Goomba Kill
 	{SPRINT,23},
 	{SPRINT_JUMP,3},	//Last Pipe
 	{SPRINT,14},
@@ -82,7 +84,7 @@ static const command step[] = {
 
 	{NOTHING,460},
 
-	//Reset
+	//Reset to start point
 	{SUSPEND,5},
 	{NOTHING,25},
 	{L_DOWN,5},
@@ -264,7 +266,7 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 
 		case PROCESS:
 
-			switch (step[bufindex].button)
+			switch (step[bufindex].button)	//From the enumneration at the top, add any commands you created to this file.
 			{
 
 				case L_UP:
@@ -342,7 +344,7 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 					ReportData->LX = STICK_MAX;
 					break;
 
-				case SPRINT_JUMP:
+				case SPRINT_JUMP:		//As an example of muti-button and button with stick. You could use the same style for involving the D-Pad
 					ReportData->Button |= SWITCH_B | SWITCH_A;
 					ReportData->LX = STICK_MAX;
 					break;
