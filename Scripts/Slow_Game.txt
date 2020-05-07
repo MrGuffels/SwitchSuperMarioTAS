@@ -1,0 +1,65 @@
+	{SYNC,5},
+	{NOTHING,25},
+	{SYNC,5},
+	{NOTHING,25},
+	{A,5},
+	{NOTHING,100},
+	{A,5},
+	//Game Start
+	{NOTHING,115},
+	{L_RIGHT,118},
+	{A,5},		//Goomba
+	{L_RIGHT,60},
+	{A,5},		//Pipe1
+	{L_RIGHT,65},
+	{A,10},		//Pipe2
+	{L_RIGHT,40},
+	{A,30},		//Pipe3
+	{L_RIGHT,45},
+	{A,30},		//Pipe4
+	{L_RIGHT,80},
+	{A,5},		//Pit
+	{L_RIGHT,115},
+	{A,12},		//Big Pit
+	{L_RIGHT,48},
+	{A,12},		//Goombas
+	{L_RIGHT,50},
+	{A,10},		//Turtle
+	{L_RIGHT,44},
+	{A,5},		//Goombas
+	{L_RIGHT,80},
+	{A,5},		//Goombas
+	{L_RIGHT,22},
+	{A,5},		//Goombas
+	{L_RIGHT,37},
+	{A,15},		//Stairs1
+	{L_RIGHT,13},
+	{A,25},		//Stairs1.1
+	{L_RIGHT,49},
+	{A,12},		//Stairs2
+	{L_RIGHT,15},
+	{A,4},		//Stairs2.1
+	{L_RIGHT,15},
+	{A,12},		//Stairs2.2
+	{L_RIGHT,50},
+	{A,10},		//Pipe5
+	{L_RIGHT,65},
+	{A,10},		//Goombas
+	{L_RIGHT,30},
+	{A,10},		//Pipe6-Stairs3
+	{L_RIGHT,25},
+	{A,25},	//Stairs3.1
+	{L_RIGHT,6},
+	{A,20},		//Stairs3.2
+	{L_RIGHT,50},
+	{A,10},		//FlagPole
+	{L_RIGHT,30},
+
+	{NOTHING,150},
+	//Reset
+	{SUSPEND,5},
+	{NOTHING,25},
+	{L_DOWN,5},
+	{NOTHING,25},
+	{L_RIGHT,5},
+	{NOTHING,10000},

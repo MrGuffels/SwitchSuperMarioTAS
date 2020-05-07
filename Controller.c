@@ -1,39 +1,29 @@
-/*
-Nintendo Switch Fightstick - Proof-of-Concept
-
-Based on the LUFA library's Low-Level Joystick Demo
-	(C) Dean Camera
-Based on the HORI's Pokken Tournament Pro Pad design
-	(C) HORI
-
-This project implements a modified version of HORI's Pokken Tournament Pro Pad
-USB descriptors to allow for the creation of custom controllers for the
-Nintendo Switch. This also works to a limited degree on the PS3.
-
-Since System Update v3.0.0, the Nintendo Switch recognizes the Pokken
-Tournament Pro Pad as a Pro Controller. Physical design limitations prevent
-the Pokken Controller from functioning at the same level as the Pro
-Controller. However, by default most of the descriptors are there, with the
-exception of Home and Capture. Descriptor modification allows us to unlock
-these buttons for our use.
-*/
-
-#include "Joystick.h"
+#include "Controller.h"
 
 typedef enum {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	X,
-	Y,
+	L_UP,
+	L_DOWN,
+	L_LEFT,
+	L_RIGHT,
+	R_UP,
+	R_DOWN,
+	R_LEFT,
+	R_RIGHT,
 	A,
 	B,
+	Y,
+	X,
 	L,
 	R,
-	THROW,
-	NOTHING,
-	TRIGGERS
+	ZL,
+	ZR,
+	MINUS,
+    PLUS,
+	SPRINT,
+	SPRINT_JUMP,
+	SUSPEND,
+	SYNC,
+    NOTHING
 } Buttons_t;
 
 typedef struct {
@@ -41,149 +31,68 @@ typedef struct {
 	uint16_t duration;
 } command; 
 
+//Instructions for controller goes here
+//Plug in on sync screen
 static const command step[] = {
-	// Setup controller
-	{ NOTHING,  250 },
-	{ TRIGGERS,   5 },
-	{ NOTHING,  150 },
-	{ TRIGGERS,   5 },
-	{ NOTHING,  150 },
-	{ A,          5 },
-	{ NOTHING,  250 },
-
-	// Talk to Pondo
-	{ A,          5 }, // Start
-	{ NOTHING,   30 },
-	{ B,          5 }, // Quick output of text
-	{ NOTHING,   20 }, // Halloo, kiddums!
-	{ A,          5 }, // <- I'll try it!
-	{ NOTHING,   15 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ A,          5 }, // <- OK!
-	{ NOTHING,   15 },
-	{ B,          5 },
-	{ NOTHING,   20 }, // Aha! Play bells are ringing! I gotta set up the pins, but I'll be back in a flurry
-	{ A,          5 }, // <Continue>
-	{ NOTHING,  325 }, // Cut to different scene (Knock 'em flat!)
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ A,          5 }, // <Continue> // Camera transition takes place after this
-	{ NOTHING,   50 },
-	{ B,          5 },
-	{ NOTHING,   20 }, // If you can knock over all 10 pins in one roll, that's a strike
-	{ A,          5 }, // <Continue>
-	{ NOTHING,   15 },
-	{ B,          5 },
-	{ NOTHING,   20 }, // A spare is...
-	{ A,          5 }, // <Continue>
-	{ NOTHING,  100 }, // Well, good luck
-	{ A,          5 }, // <Continue>
-	{ NOTHING,  150 }, // Pondo walks away
-
-	// Pick up Snowball (Or alternatively, run to bail in case of a non-strike)
-	{ A,          5 },
-	{ NOTHING,   50 },
-	{ LEFT,      42 },
-	{ UP,        80 },
-	{ THROW,     25 },
-
-	// Non-strike alternative flow, cancel bail and rethrow
-	{ NOTHING,   30 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 }, // I have to split dialogue (It's nothing)
-	{ NOTHING,   15 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,  450 },
-	{ B,          5 }, // Snowly moly... there are rules!
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 }, // Second dialogue
-	{ NOTHING,   20 },
-	{ DOWN,      10 }, // Return to snowball
-	{ NOTHING,   20 },
-	{ A,          5 }, // Pick up snowball, we just aimlessly throw it
-	{ NOTHING,   50 },
-	{ UP,        10 },
-	{ THROW,     25 },
-
-	// Back at main flow
-	{ NOTHING,  175 }, // Ater throw wait
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 }, // To the rewards
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
 	
-	{ B,          5 }, // Wait for 450 cycles by bashing B (Like real players do!)
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 },
-	{ B,          5 },
-	{ NOTHING,   20 } // Saving, intermission
+	{SYNC,5},
+	{NOTHING,25},
+	{SYNC,5},
+	{NOTHING,25},
+	{A,5},
+	{NOTHING,100},
+	//Game Start
+	{A,5},
+	{NOTHING,115},
+	{SPRINT,47},
+	{SPRINT_JUMP,16},	//On Block
+	{SPRINT,8},
+	{SPRINT_JUMP,3},	//On Platform
+	{SPRINT,16},
+	{SPRINT_JUMP,3},	//Coin Block
+	{SPRINT,13},
+	{SPRINT_JUMP,3},	//Off Platform/Pipe1
+	{SPRINT,36},
+	{SPRINT_JUMP,7},	//Pipe2
+	{SPRINT,11},
+	{SPRINT_JUMP,16},	//Pipe3
+	{SPRINT,15},
+	{SPRINT_JUMP,3},	//Off Pipe3
+	{SPRINT,26},
+	{SPRINT_JUMP,10},	//On Pipe4
+	{L_DOWN,10},		//In Pipe4
+	{NOTHING,70},
+	{SPRINT,15},
+	{SPRINT_JUMP,8},	//SecretUp
+	{SPRINT,23},
+	{SPRINT_JUMP,3},	//SecretDown
+	{L_LEFT,7},
+	{NOTHING,17},
+	{SPRINT,5},
+	{NOTHING,195},
+	{SPRINT,39},
+	{SPRINT_JUMP,3},	//2nd Goomba
+	{SPRINT,23},
+	{SPRINT_JUMP,3},	//Last Pipe
+	{SPRINT,14},
+	{SPRINT_JUMP,17},
+	{SPRINT,8},
+	{SPRINT_JUMP,20},
+	{SPRINT,30},
+
+	{NOTHING,460},
+
+	//Reset
+	{SUSPEND,5},
+	{NOTHING,25},
+	{L_DOWN,5},
+	{NOTHING,15},
+	{L_RIGHT,5},
+
+	{NOTHING,10000},
+
+
+	
 };
 
 // Main entry point.
@@ -212,16 +121,6 @@ void SetupHardware(void) {
 	clock_prescale_set(clock_div_1);
 	// We can then initialize our hardware and peripherals, including the USB stack.
 
-	#ifdef ALERT_WHEN_DONE
-	// Both PORTD and PORTB will be used for the optional LED flashing and buzzer.
-	#warning LED and Buzzer functionality enabled. All pins on both PORTB and \
-PORTD will toggle when printing is done.
-	DDRD  = 0xFF; //Teensy uses PORTD
-	PORTD =  0x0;
-                  //We'll just flash all pins on both ports since the UNO R3
-	DDRB  = 0xFF; //uses PORTB. Micro can use either or, but both give us 2 LEDs
-	PORTB =  0x0; //The ATmega328P on the UNO will be resetting, so unplug it?
-	#endif
 	// The USB stack should be initialized last.
 	USB_Init();
 }
@@ -342,35 +241,9 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 
 		case SYNC_CONTROLLER:
 			state = BREATHE;
-			break;
-
-		// case SYNC_CONTROLLER:
-		// 	if (report_count > 550)
-		// 	{
-		// 		report_count = 0;
-		// 		state = SYNC_POSITION;
-		// 	}
-		// 	else if (report_count == 250 || report_count == 300 || report_count == 325)
-		// 	{
-		// 		ReportData->Button |= SWITCH_L | SWITCH_R;
-		// 	}
-		// 	else if (report_count == 350 || report_count == 375 || report_count == 400)
-		// 	{
-		// 		ReportData->Button |= SWITCH_A;
-		// 	}
-		// 	else
-		// 	{
-		// 		ReportData->Button = 0;
-		// 		ReportData->LX = STICK_CENTER;
-		// 		ReportData->LY = STICK_CENTER;
-		// 		ReportData->RX = STICK_CENTER;
-		// 		ReportData->RY = STICK_CENTER;
-		// 		ReportData->HAT = HAT_CENTER;
-		// 	}
-		// 	report_count++;
-		// 	break;
-
-		case SYNC_POSITION:
+			break;		
+            
+        case SYNC_POSITION:
 			bufindex = 0;
 
 
@@ -394,22 +267,38 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 			switch (step[bufindex].button)
 			{
 
-				case UP:
+				case L_UP:
 					ReportData->LY = STICK_MIN;				
 					break;
 
-				case LEFT:
-					ReportData->LX = STICK_MIN;				
-					break;
-
-				case DOWN:
+				case L_DOWN:
 					ReportData->LY = STICK_MAX;				
 					break;
 
-				case RIGHT:
+				case L_LEFT:
+					ReportData->LX = STICK_MIN;				
+					break;
+
+				case L_RIGHT:
 					ReportData->LX = STICK_MAX;				
 					break;
 
+				case R_UP:
+					ReportData->RY = STICK_MIN;				
+					break;
+
+				case R_DOWN:
+					ReportData->RY = STICK_MAX;				
+					break;
+
+				case R_LEFT:
+					ReportData->RX = STICK_MIN;				
+					break;
+
+				case R_RIGHT:
+					ReportData->RX = STICK_MAX;				
+					break;
+					
 				case A:
 					ReportData->Button |= SWITCH_A;
 					break;
@@ -418,16 +307,51 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 					ReportData->Button |= SWITCH_B;
 					break;
 
+				case Y:
+					ReportData->Button |= SWITCH_Y;
+					break;
+
+				case X:
+					ReportData->Button |= SWITCH_X;
+					break;
+
+				case L:
+					ReportData->Button |= SWITCH_L;
+					break;
+
 				case R:
 					ReportData->Button |= SWITCH_R;
 					break;
-
-				case THROW:
-					ReportData->LY = STICK_MIN;				
-					ReportData->Button |= SWITCH_R;
+				
+				case ZL:
+					ReportData->Button |= SWITCH_ZL;
 					break;
 
-				case TRIGGERS:
+				case ZR:
+					ReportData->Button |= SWITCH_ZR;
+					break;
+
+				case MINUS:
+					ReportData->Button |= SWITCH_MINUS;
+
+                case PLUS:
+                    ReportData->Button |= SWITCH_PLUS;
+
+				case SPRINT:
+					ReportData->Button |= SWITCH_B;
+					ReportData->LX = STICK_MAX;
+					break;
+
+				case SPRINT_JUMP:
+					ReportData->Button |= SWITCH_B | SWITCH_A;
+					ReportData->LX = STICK_MAX;
+					break;
+
+				case SUSPEND:
+					ReportData->Button |= SWITCH_ZL | SWITCH_ZR;
+					break;
+
+				case SYNC:
 					ReportData->Button |= SWITCH_L | SWITCH_R;
 					break;
 
